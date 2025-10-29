@@ -46,3 +46,4 @@ htmlcov/
 .codex_history/
 .codex_context/
 *.log
+.github/
