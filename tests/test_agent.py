@@ -2,6 +2,7 @@
 Tests for agent module
 """
 
+import json
 import pytest
 from unittest.mock import patch, MagicMock
 from codexcli.agent import LLMProvider, OpenAIProvider, AnthropicProvider, CodexAgent, create_agent
@@ -290,10 +291,27 @@ def test_create_agent_unknown_provider():
         create_agent(provider="unknown", api_key="test")
 
 
-def test_create_agent_missing_api_key():
+def test_create_agent_missing_api_key(monkeypatch, tmp_path):
     """Test creating agent without API key"""
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr("codexcli.agent.Path.home", lambda: tmp_path)
     with pytest.raises(ValueError, match="API_KEY not set"):
         create_agent(provider="openai")
+
+
+def test_create_agent_openai_auth_file_fallback(monkeypatch, tmp_path):
+    """Test that OPENAI auth file is used when environment variable is missing"""
+    auth_dir = tmp_path / ".codex"
+    auth_dir.mkdir()
+    (auth_dir / "auth.json").write_text(json.dumps({"OPENAI_API_KEY": "file_key"}))
+
+    monkeypatch.delenv("OPENAI_API_KEY", raising=False)
+    monkeypatch.setattr("codexcli.agent.Path.home", lambda: tmp_path)
+
+    with patch("openai.OpenAI"):
+        agent = create_agent(provider="openai")
+
+    assert agent.provider.api_key == "file_key"
 
 
 @pytest.mark.unit
