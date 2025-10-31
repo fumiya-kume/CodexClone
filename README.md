@@ -78,22 +78,22 @@ DEFAULT_APPROVAL_MODE=suggest
 ### インタラクティブモード
 
 ```bash
-codex
+kuudex
 ```
 
 または特定のプロバイダーを指定:
 
 ```bash
-codex --provider openai
-codex --provider anthropic
+kuudex --provider openai
+kuudex --provider anthropic
 ```
 
 承認モードを指定:
 
 ```bash
-codex --mode suggest    # すべての操作で確認（デフォルト）
-codex --mode auto       # ファイル操作は自動、コマンドは確認
-codex --mode full       # すべて自動実行（注意！）
+kuudex --mode suggest    # すべての操作で確認（デフォルト）
+kuudex --mode auto       # ファイル操作は自動、コマンドは確認
+kuudex --mode full       # すべて自動実行（注意！）
 ```
 
 ### ワンショットモード
@@ -101,8 +101,8 @@ codex --mode full       # すべて自動実行（注意！）
 単一のコマンドを実行:
 
 ```bash
-codex ask "Create a Python script that sorts a list"
-codex ask "Read main.py and explain what it does"
+kuudex ask "Create a Python script that sorts a list"
+kuudex ask "Read main.py and explain what it does"
 ```
 
 ### インタラクティブコマンド
@@ -120,13 +120,13 @@ codex ask "Read main.py and explain what it does"
 
 ```bash
 # プロジェクトのファイルツリーを表示
-codex tree
+kuudex tree
 
 # 会話履歴をクリア
-codex clear
+kuudex clear
 
 # セッション情報を表示
-codex info
+kuudex info
 ```
 
 ## 承認モード
