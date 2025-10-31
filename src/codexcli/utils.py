@@ -1,6 +1,7 @@
 """
 Utility functions for CodexCLI
 """
+
 import os
 import sys
 from pathlib import Path
@@ -73,7 +74,7 @@ def print_diff(old_content: str, new_content: str, filename: str):
         new_content.splitlines(keepends=True),
         fromfile=f"a/{filename}",
         tofile=f"b/{filename}",
-        lineterm=""
+        lineterm="",
     )
 
     diff_text = "".join(diff)
@@ -89,7 +90,7 @@ def confirm(message: str, default: bool = False) -> bool:
     class YesNoValidator(Validator):
         def validate(self, document):
             text = document.text.lower()
-            if text and text not in ['y', 'n', 'yes', 'no']:
+            if text and text not in ["y", "n", "yes", "no"]:
                 raise ValidationError(message="Please enter 'y' or 'n'")
 
     default_str = "Y/n" if default else "y/N"
@@ -97,7 +98,7 @@ def confirm(message: str, default: bool = False) -> bool:
         result = prompt(f"{message} [{default_str}]: ", validator=YesNoValidator())
         if not result:
             return default
-        return result.lower() in ['y', 'yes']
+        return result.lower() in ["y", "yes"]
     except (KeyboardInterrupt, EOFError):
         return False
 
@@ -112,10 +113,41 @@ def truncate_content(content: str, max_length: int = 1000) -> str:
 def is_text_file(filepath: Path) -> bool:
     """Check if a file is a text file"""
     text_extensions = {
-        '.py', '.js', '.ts', '.jsx', '.tsx', '.java', '.c', '.cpp', '.h', '.hpp',
-        '.cs', '.go', '.rs', '.rb', '.php', '.swift', '.kt', '.scala',
-        '.txt', '.md', '.json', '.yaml', '.yml', '.toml', '.xml', '.html', '.css',
-        '.sh', '.bash', '.zsh', '.fish', '.sql', '.r', '.m', '.swift'
+        ".py",
+        ".js",
+        ".ts",
+        ".jsx",
+        ".tsx",
+        ".java",
+        ".c",
+        ".cpp",
+        ".h",
+        ".hpp",
+        ".cs",
+        ".go",
+        ".rs",
+        ".rb",
+        ".php",
+        ".swift",
+        ".kt",
+        ".scala",
+        ".txt",
+        ".md",
+        ".json",
+        ".yaml",
+        ".yml",
+        ".toml",
+        ".xml",
+        ".html",
+        ".css",
+        ".sh",
+        ".bash",
+        ".zsh",
+        ".fish",
+        ".sql",
+        ".r",
+        ".m",
+        ".swift",
     }
     return filepath.suffix.lower() in text_extensions
 
@@ -132,7 +164,7 @@ def read_file_safe(filepath: Path, max_size_kb: int = 500) -> Optional[str]:
             print_warning(f"File {filepath} is not a text file")
             return None
 
-        return filepath.read_text(encoding='utf-8')
+        return filepath.read_text(encoding="utf-8")
     except Exception as e:
         print_error(f"Error reading file {filepath}: {e}")
         return None

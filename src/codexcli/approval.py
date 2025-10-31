@@ -1,6 +1,7 @@
 """
 Approval modes and user consent management
 """
+
 from enum import Enum
 from typing import Optional, Callable
 from .utils import console, confirm, print_info, print_warning
@@ -8,6 +9,7 @@ from .utils import console, confirm, print_info, print_warning
 
 class ApprovalMode(Enum):
     """Approval modes for operations"""
+
     SUGGEST = "suggest"  # Ask for approval on all operations
     AUTO_EDIT = "auto_edit"  # Auto edit files, ask for shell commands
     FULL_AUTO = "full_auto"  # Fully automated
@@ -49,7 +51,7 @@ class ApprovalManager:
         filepath: str,
         old_content: str,
         new_content: str,
-        preview_callback: Optional[Callable] = None
+        preview_callback: Optional[Callable] = None,
     ) -> bool:
         """Request approval to edit a file"""
         if self.mode == ApprovalMode.FULL_AUTO or self.mode == ApprovalMode.AUTO_EDIT:
@@ -127,7 +129,7 @@ class ApprovalManager:
                 "  • Shell command execution\n"
                 "  • API calls\n"
                 "\n[bold red]Warning: Use with caution![/bold red]"
-            )
+            ),
         }
 
         console.print(f"\n[bold]Current Approval Mode:[/bold] {self.mode.value}")

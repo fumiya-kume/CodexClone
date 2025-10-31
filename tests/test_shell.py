@@ -1,6 +1,7 @@
 """
 Tests for shell module
 """
+
 import pytest
 import subprocess
 from pathlib import Path
@@ -22,14 +23,10 @@ def test_shell_executor_initialization_default_dir(approval_manager):
     assert executor.working_dir == Path.cwd()
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_execute_success(mock_run, approval_manager, temp_dir):
     """Test successful command execution"""
-    mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="command output",
-        stderr=""
-    )
+    mock_run.return_value = MagicMock(returncode=0, stdout="command output", stderr="")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     success, stdout, stderr = executor.execute("echo hello")
@@ -40,14 +37,10 @@ def test_shell_executor_execute_success(mock_run, approval_manager, temp_dir):
     mock_run.assert_called_once()
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_execute_failure(mock_run, approval_manager, temp_dir):
     """Test failed command execution"""
-    mock_run.return_value = MagicMock(
-        returncode=1,
-        stdout="",
-        stderr="error message"
-    )
+    mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="error message")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     success, stdout, stderr = executor.execute("false")
@@ -56,7 +49,7 @@ def test_shell_executor_execute_failure(mock_run, approval_manager, temp_dir):
     assert stderr == "error message"
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_execute_timeout(mock_run, approval_manager, temp_dir):
     """Test command timeout"""
     mock_run.side_effect = subprocess.TimeoutExpired("cmd", 30)
@@ -68,7 +61,7 @@ def test_shell_executor_execute_timeout(mock_run, approval_manager, temp_dir):
     assert "timed out" in stderr
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_execute_exception(mock_run, approval_manager, temp_dir):
     """Test command execution exception"""
     mock_run.side_effect = Exception("Execution error")
@@ -80,14 +73,10 @@ def test_shell_executor_execute_exception(mock_run, approval_manager, temp_dir):
     assert "Error executing command" in stderr
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_execute_with_description(mock_run, approval_manager, temp_dir):
     """Test command execution with description"""
-    mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="output",
-        stderr=""
-    )
+    mock_run.return_value = MagicMock(returncode=0, stdout="output", stderr="")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     success, stdout, stderr = executor.execute("ls", description="List files")
@@ -95,14 +84,10 @@ def test_shell_executor_execute_with_description(mock_run, approval_manager, tem
     assert success is True
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_execute_safe(mock_run, approval_manager, temp_dir):
     """Test execute_safe method"""
-    mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="output",
-        stderr=""
-    )
+    mock_run.return_value = MagicMock(returncode=0, stdout="output", stderr="")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     result = executor.execute_safe("echo test")
@@ -110,14 +95,10 @@ def test_shell_executor_execute_safe(mock_run, approval_manager, temp_dir):
     assert result is True
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_execute_safe_failure(mock_run, approval_manager, temp_dir):
     """Test execute_safe method with failure"""
-    mock_run.return_value = MagicMock(
-        returncode=1,
-        stdout="",
-        stderr="error"
-    )
+    mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="error")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     result = executor.execute_safe("false")
@@ -125,14 +106,10 @@ def test_shell_executor_execute_safe_failure(mock_run, approval_manager, temp_di
     assert result is False
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_get_output(mock_run, approval_manager, temp_dir):
     """Test get_output method"""
-    mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="command output",
-        stderr=""
-    )
+    mock_run.return_value = MagicMock(returncode=0, stdout="command output", stderr="")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     output = executor.get_output("echo test")
@@ -140,14 +117,10 @@ def test_shell_executor_get_output(mock_run, approval_manager, temp_dir):
     assert output == "command output"
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_get_output_failure(mock_run, approval_manager, temp_dir):
     """Test get_output method with failure"""
-    mock_run.return_value = MagicMock(
-        returncode=1,
-        stdout="",
-        stderr="error"
-    )
+    mock_run.return_value = MagicMock(returncode=1, stdout="", stderr="error")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     output = executor.get_output("false")
@@ -155,7 +128,7 @@ def test_shell_executor_get_output_failure(mock_run, approval_manager, temp_dir)
     assert output is None
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_is_command_available(mock_run, approval_manager, temp_dir):
     """Test checking if command is available"""
     mock_run.return_value = MagicMock(returncode=0)
@@ -166,7 +139,7 @@ def test_shell_executor_is_command_available(mock_run, approval_manager, temp_di
     assert available is True
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_is_command_not_available(mock_run, approval_manager, temp_dir):
     """Test checking if command is not available"""
     mock_run.return_value = MagicMock(returncode=1)
@@ -177,7 +150,7 @@ def test_shell_executor_is_command_not_available(mock_run, approval_manager, tem
     assert available is False
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_is_command_available_exception(mock_run, approval_manager, temp_dir):
     """Test is_command_available with exception"""
     mock_run.side_effect = Exception("Error")
@@ -196,8 +169,8 @@ def test_shell_executor_with_suggest_mode(temp_dir):
     assert executor.approval_manager.get_mode() == ApprovalMode.SUGGEST
 
 
-@patch('codexcli.approval.confirm', return_value=False)
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.approval.confirm", return_value=False)
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_approval_denied(mock_run, mock_confirm, temp_dir):
     """Test command execution when approval is denied"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -211,47 +184,37 @@ def test_shell_executor_approval_denied(mock_run, mock_confirm, temp_dir):
     mock_run.assert_not_called()
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_working_directory(mock_run, approval_manager, temp_dir):
     """Test that command is executed in working directory"""
-    mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="",
-        stderr=""
-    )
+    mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     executor.execute("pwd")
 
     # Check that cwd parameter was passed to subprocess.run
     call_kwargs = mock_run.call_args[1]
-    assert call_kwargs['cwd'] == temp_dir
+    assert call_kwargs["cwd"] == temp_dir
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_custom_timeout(mock_run, approval_manager, temp_dir):
     """Test command execution with custom timeout"""
-    mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="",
-        stderr=""
-    )
+    mock_run.return_value = MagicMock(returncode=0, stdout="", stderr="")
 
     executor = ShellExecutor(approval_manager, temp_dir)
     executor.execute("sleep 1", timeout=60)
 
     # Check that timeout parameter was passed to subprocess.run
     call_kwargs = mock_run.call_args[1]
-    assert call_kwargs['timeout'] == 60
+    assert call_kwargs["timeout"] == 60
 
 
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_output_stripping(mock_run, approval_manager, temp_dir):
     """Test that output is stripped of whitespace"""
     mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="  output with spaces  \n",
-        stderr="  error with spaces  \n"
+        returncode=0, stdout="  output with spaces  \n", stderr="  error with spaces  \n"
     )
 
     executor = ShellExecutor(approval_manager, temp_dir)
@@ -262,14 +225,10 @@ def test_shell_executor_output_stripping(mock_run, approval_manager, temp_dir):
 
 
 @pytest.mark.unit
-@patch('codexcli.shell.subprocess.run')
+@patch("codexcli.shell.subprocess.run")
 def test_shell_executor_multiple_commands(mock_run, approval_manager, temp_dir):
     """Test executing multiple commands"""
-    mock_run.return_value = MagicMock(
-        returncode=0,
-        stdout="output",
-        stderr=""
-    )
+    mock_run.return_value = MagicMock(returncode=0, stdout="output", stderr="")
 
     executor = ShellExecutor(approval_manager, temp_dir)
 

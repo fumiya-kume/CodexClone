@@ -1,6 +1,7 @@
 """
 Tests for approval module
 """
+
 import pytest
 from unittest.mock import patch, MagicMock
 from codexcli.approval import ApprovalManager, ApprovalMode, parse_approval_mode
@@ -53,7 +54,7 @@ def test_file_create_approval_auto_edit():
     assert approved is True
 
 
-@patch('codexcli.approval.confirm', return_value=True)
+@patch("codexcli.approval.confirm", return_value=True)
 def test_file_create_approval_suggest_approved(mock_confirm):
     """Test file creation approval in SUGGEST mode - approved"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -62,7 +63,7 @@ def test_file_create_approval_suggest_approved(mock_confirm):
     mock_confirm.assert_called_once()
 
 
-@patch('codexcli.approval.confirm', return_value=False)
+@patch("codexcli.approval.confirm", return_value=False)
 def test_file_create_approval_suggest_denied(mock_confirm):
     """Test file creation approval in SUGGEST mode - denied"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -85,7 +86,7 @@ def test_file_edit_approval_auto_edit():
     assert approved is True
 
 
-@patch('codexcli.approval.confirm', return_value=True)
+@patch("codexcli.approval.confirm", return_value=True)
 def test_file_edit_approval_suggest_approved(mock_confirm):
     """Test file edit approval in SUGGEST mode - approved"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -94,7 +95,7 @@ def test_file_edit_approval_suggest_approved(mock_confirm):
     mock_confirm.assert_called_once()
 
 
-@patch('codexcli.approval.confirm', return_value=False)
+@patch("codexcli.approval.confirm", return_value=False)
 def test_file_edit_approval_suggest_denied(mock_confirm):
     """Test file edit approval in SUGGEST mode - denied"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -116,7 +117,7 @@ def test_file_delete_approval_auto_edit():
     assert approved is True
 
 
-@patch('codexcli.approval.confirm', return_value=True)
+@patch("codexcli.approval.confirm", return_value=True)
 def test_file_delete_approval_suggest_approved(mock_confirm):
     """Test file deletion approval in SUGGEST mode - approved"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -124,7 +125,7 @@ def test_file_delete_approval_suggest_approved(mock_confirm):
     assert approved is True
 
 
-@patch('codexcli.approval.confirm', return_value=False)
+@patch("codexcli.approval.confirm", return_value=False)
 def test_file_delete_approval_suggest_denied(mock_confirm):
     """Test file deletion approval in SUGGEST mode - denied"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -139,7 +140,7 @@ def test_shell_command_approval_full_auto():
     assert approved is True
 
 
-@patch('codexcli.approval.confirm', return_value=True)
+@patch("codexcli.approval.confirm", return_value=True)
 def test_shell_command_approval_auto_edit(mock_confirm):
     """Test shell command approval in AUTO_EDIT mode - requires confirmation"""
     manager = ApprovalManager(ApprovalMode.AUTO_EDIT)
@@ -148,7 +149,7 @@ def test_shell_command_approval_auto_edit(mock_confirm):
     mock_confirm.assert_called_once()
 
 
-@patch('codexcli.approval.confirm', return_value=True)
+@patch("codexcli.approval.confirm", return_value=True)
 def test_shell_command_approval_suggest(mock_confirm):
     """Test shell command approval in SUGGEST mode"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -170,7 +171,7 @@ def test_api_call_approval_auto_edit():
     assert approved is True
 
 
-@patch('codexcli.approval.confirm', return_value=True)
+@patch("codexcli.approval.confirm", return_value=True)
 def test_api_call_approval_suggest(mock_confirm):
     """Test API call approval in SUGGEST mode"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)
@@ -179,7 +180,7 @@ def test_api_call_approval_suggest(mock_confirm):
 
 
 @pytest.mark.unit
-@patch('codexcli.approval.console')
+@patch("codexcli.approval.console")
 def test_show_mode_info(mock_console):
     """Test showing mode info"""
     manager = ApprovalManager(ApprovalMode.SUGGEST)

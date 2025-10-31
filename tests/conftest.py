@@ -1,6 +1,7 @@
 """
 Shared pytest fixtures for CodexCLI tests
 """
+
 import os
 import tempfile
 import pytest
@@ -37,8 +38,8 @@ def test_project_dir(temp_dir):
 def conversation_context(temp_dir, monkeypatch):
     """Create a conversation context for testing"""
     # Mock the file paths to use temp directory so tests don't interfere
-    monkeypatch.setattr('codexcli.context.get_context_file', lambda: temp_dir / "context.json")
-    monkeypatch.setattr('codexcli.context.get_history_file', lambda: temp_dir / "history.json")
+    monkeypatch.setattr("codexcli.context.get_context_file", lambda: temp_dir / "context.json")
+    monkeypatch.setattr("codexcli.context.get_history_file", lambda: temp_dir / "history.json")
     return ConversationContext(max_history=10)
 
 
@@ -79,8 +80,9 @@ def mock_anthropic_client():
 @pytest.fixture
 def mock_openai_provider(mock_openai_client):
     """Mock OpenAI provider"""
-    with patch('openai.OpenAI', return_value=mock_openai_client):
+    with patch("openai.OpenAI", return_value=mock_openai_client):
         from codexcli.agent import OpenAIProvider
+
         provider = OpenAIProvider(api_key="test_key", model="gpt-4")
         yield provider
 
@@ -88,8 +90,9 @@ def mock_openai_provider(mock_openai_client):
 @pytest.fixture
 def mock_anthropic_provider(mock_anthropic_client):
     """Mock Anthropic provider"""
-    with patch('anthropic.Anthropic', return_value=mock_anthropic_client):
+    with patch("anthropic.Anthropic", return_value=mock_anthropic_client):
         from codexcli.agent import AnthropicProvider
+
         provider = AnthropicProvider(api_key="test_key", model="claude-3-5-sonnet-20241022")
         yield provider
 
@@ -132,21 +135,21 @@ python test.py
 @pytest.fixture
 def mock_console():
     """Mock rich console for testing"""
-    with patch('codexcli.utils.console') as mock:
+    with patch("codexcli.utils.console") as mock:
         yield mock
 
 
 @pytest.fixture
 def mock_confirm():
     """Mock confirmation prompt"""
-    with patch('codexcli.utils.confirm', return_value=True) as mock:
+    with patch("codexcli.utils.confirm", return_value=True) as mock:
         yield mock
 
 
 @pytest.fixture
 def mock_prompt():
     """Mock prompt_toolkit prompt"""
-    with patch('codexcli.utils.prompt', return_value="test input") as mock:
+    with patch("codexcli.utils.prompt", return_value="test input") as mock:
         yield mock
 
 
@@ -154,8 +157,8 @@ def mock_prompt():
 def env_vars():
     """Set up environment variables for testing"""
     original_env = os.environ.copy()
-    os.environ['OPENAI_API_KEY'] = 'test_openai_key'
-    os.environ['ANTHROPIC_API_KEY'] = 'test_anthropic_key'
+    os.environ["OPENAI_API_KEY"] = "test_openai_key"
+    os.environ["ANTHROPIC_API_KEY"] = "test_anthropic_key"
     yield
     os.environ.clear()
     os.environ.update(original_env)
@@ -164,12 +167,8 @@ def env_vars():
 @pytest.fixture
 def mock_subprocess():
     """Mock subprocess for shell command tests"""
-    with patch('subprocess.run') as mock:
-        mock.return_value = MagicMock(
-            returncode=0,
-            stdout="Command output",
-            stderr=""
-        )
+    with patch("subprocess.run") as mock:
+        mock.return_value = MagicMock(returncode=0, stdout="Command output", stderr="")
         yield mock
 
 
@@ -187,4 +186,4 @@ if __name__ == "__main__":
 @pytest.fixture
 def binary_file_content():
     """Binary content for testing"""
-    return b'\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR'
+    return b"\x89PNG\r\n\x1a\n\x00\x00\x00\rIHDR"

@@ -1,6 +1,7 @@
 """
 Tests for file_ops module
 """
+
 import pytest
 from pathlib import Path
 from codexcli.file_ops import FileOperations
@@ -209,19 +210,19 @@ def test_file_ops_create_file_with_encoding(file_ops, temp_dir):
     result = file_ops.create_file("unicode.txt", content)
 
     assert result is True
-    assert (temp_dir / "unicode.txt").read_text(encoding='utf-8') == content
+    assert (temp_dir / "unicode.txt").read_text(encoding="utf-8") == content
 
 
 def test_file_ops_edit_file_with_encoding(file_ops, temp_dir):
     """Test editing file with Unicode content"""
     test_file = temp_dir / "unicode.txt"
-    test_file.write_text("old content", encoding='utf-8')
+    test_file.write_text("old content", encoding="utf-8")
 
     new_content = "New 内容 ✨"
     result = file_ops.edit_file("unicode.txt", new_content)
 
     assert result is True
-    assert test_file.read_text(encoding='utf-8') == new_content
+    assert test_file.read_text(encoding="utf-8") == new_content
 
 
 def test_file_ops_nested_directory_creation(file_ops, temp_dir):

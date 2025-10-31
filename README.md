@@ -21,6 +21,17 @@ CodexCLIは、OpenAI GPTやAnthropic Claudeを使用して、コードの生成�
 
 - Python 3.8以上
 - OpenAI APIキーまたはAnthropic APIキー
+- uv CLI（未導入の場合は以下のコマンドでインストール）
+
+```bash
+curl -LsSf https://astral.sh/uv/install.sh | sh
+```
+
+Windows PowerShellの場合:
+
+```powershell
+irm https://astral.sh/uv/install.ps1 | iex
+```
 
 ### インストール手順
 
@@ -30,10 +41,10 @@ git clone https://github.com/yourusername/CodexClone.git
 cd CodexClone
 
 # 依存関係をインストール
-pip install -e .
+uv sync
 
 # または開発用依存関係も含めて
-pip install -e ".[dev]"
+uv sync --extra dev
 ```
 
 ### 環境設定
@@ -227,7 +238,7 @@ ImportError: No module named 'openai'
 依存関係を再インストール:
 
 ```bash
-pip install -e .
+uv sync
 ```
 
 ### パーミッションエラー
@@ -239,19 +250,19 @@ pip install -e .
 ### テストの実行
 
 ```bash
-pytest
+uv run pytest
 ```
 
 ### コードフォーマット
 
 ```bash
-black src/
+uv run black src/
 ```
 
 ### 型チェック
 
 ```bash
-mypy src/
+uv run mypy src/
 ```
 
 ## ライセンス

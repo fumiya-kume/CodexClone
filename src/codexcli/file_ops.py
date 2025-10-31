@@ -1,17 +1,11 @@
 """
 File operations (read, create, edit, delete)
 """
+
 import os
 from pathlib import Path
 from typing import Optional, List
-from .utils import (
-    print_success,
-    print_error,
-    print_warning,
-    print_diff,
-    print_code,
-    read_file_safe
-)
+from .utils import print_success, print_error, print_warning, print_diff, print_code, read_file_safe
 from .approval import ApprovalManager
 
 
@@ -64,7 +58,7 @@ class FileOperations:
             file_path.parent.mkdir(parents=True, exist_ok=True)
 
             # Write file
-            file_path.write_text(content, encoding='utf-8')
+            file_path.write_text(content, encoding="utf-8")
             print_success(f"Created file: {filepath}")
             return True
 
@@ -81,7 +75,7 @@ class FileOperations:
                 print_error(f"File not found: {filepath}")
                 return False
 
-            old_content = file_path.read_text(encoding='utf-8')
+            old_content = file_path.read_text(encoding="utf-8")
 
             # Request approval
             def preview(old, new):
@@ -96,7 +90,7 @@ class FileOperations:
                 return False
 
             # Write file
-            file_path.write_text(new_content, encoding='utf-8')
+            file_path.write_text(new_content, encoding="utf-8")
             print_success(f"Edited file: {filepath}")
             return True
 
@@ -134,7 +128,7 @@ class FileOperations:
         try:
             files = list(self.project_root.rglob(pattern))
             # Filter out hidden files and directories
-            files = [f for f in files if not any(part.startswith('.') for part in f.parts)]
+            files = [f for f in files if not any(part.startswith(".") for part in f.parts)]
             return sorted(files)
         except Exception as e:
             print_error(f"Error listing files: {e}")
@@ -142,6 +136,7 @@ class FileOperations:
 
     def get_file_tree(self, max_depth: int = 3) -> str:
         """Get a tree representation of the project structure"""
+
         def build_tree(path: Path, prefix: str = "", depth: int = 0) -> List[str]:
             if depth > max_depth:
                 return []
@@ -151,9 +146,10 @@ class FileOperations:
                 items = sorted(path.iterdir(), key=lambda x: (not x.is_dir(), x.name))
                 # Filter out hidden and common ignore patterns
                 items = [
-                    item for item in items
-                    if not item.name.startswith('.') and
-                    item.name not in ['node_modules', '__pycache__', 'venv', 'env']
+                    item
+                    for item in items
+                    if not item.name.startswith(".")
+                    and item.name not in ["node_modules", "__pycache__", "venv", "env"]
                 ]
 
                 for i, item in enumerate(items):
@@ -184,33 +180,33 @@ class FileOperations:
     def _get_language(self, filepath: str) -> str:
         """Get language for syntax highlighting based on file extension"""
         ext_map = {
-            '.py': 'python',
-            '.js': 'javascript',
-            '.ts': 'typescript',
-            '.jsx': 'jsx',
-            '.tsx': 'tsx',
-            '.java': 'java',
-            '.c': 'c',
-            '.cpp': 'cpp',
-            '.h': 'c',
-            '.hpp': 'cpp',
-            '.cs': 'csharp',
-            '.go': 'go',
-            '.rs': 'rust',
-            '.rb': 'ruby',
-            '.php': 'php',
-            '.swift': 'swift',
-            '.kt': 'kotlin',
-            '.json': 'json',
-            '.yaml': 'yaml',
-            '.yml': 'yaml',
-            '.toml': 'toml',
-            '.xml': 'xml',
-            '.html': 'html',
-            '.css': 'css',
-            '.md': 'markdown',
-            '.sh': 'bash',
-            '.bash': 'bash',
+            ".py": "python",
+            ".js": "javascript",
+            ".ts": "typescript",
+            ".jsx": "jsx",
+            ".tsx": "tsx",
+            ".java": "java",
+            ".c": "c",
+            ".cpp": "cpp",
+            ".h": "c",
+            ".hpp": "cpp",
+            ".cs": "csharp",
+            ".go": "go",
+            ".rs": "rust",
+            ".rb": "ruby",
+            ".php": "php",
+            ".swift": "swift",
+            ".kt": "kotlin",
+            ".json": "json",
+            ".yaml": "yaml",
+            ".yml": "yaml",
+            ".toml": "toml",
+            ".xml": "xml",
+            ".html": "html",
+            ".css": "css",
+            ".md": "markdown",
+            ".sh": "bash",
+            ".bash": "bash",
         }
         ext = Path(filepath).suffix.lower()
-        return ext_map.get(ext, 'text')
+        return ext_map.get(ext, "text")

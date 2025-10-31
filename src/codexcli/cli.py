@@ -1,6 +1,7 @@
 """
 Main CLI entry point for CodexCLI
 """
+
 import os
 import sys
 from pathlib import Path
@@ -26,7 +27,7 @@ class CodexCLI:
         self,
         provider: str = "openai",
         approval_mode: ApprovalMode = ApprovalMode.SUGGEST,
-        project_root: Optional[Path] = None
+        project_root: Optional[Path] = None,
     ):
         self.project_root = project_root or Path.cwd()
         self.approval_manager = ApprovalManager(approval_mode)
@@ -48,12 +49,14 @@ class CodexCLI:
         from prompt_toolkit.history import FileHistory
         from prompt_toolkit.auto_suggest import AutoSuggestFromHistory
 
-        console.print(Panel.fit(
-            "[bold cyan]CodexCLI - AI Coding Assistant[/bold cyan]\n"
-            "Type your requests or questions. Type 'exit', 'quit', or press Ctrl+D to exit.\n"
-            "Type 'help' for available commands.",
-            border_style="cyan"
-        ))
+        console.print(
+            Panel.fit(
+                "[bold cyan]CodexCLI - AI Coding Assistant[/bold cyan]\n"
+                "Type your requests or questions. Type 'exit', 'quit', or press Ctrl+D to exit.\n"
+                "Type 'help' for available commands.",
+                border_style="cyan",
+            )
+        )
 
         # Show current mode
         self.approval_manager.show_mode_info()
@@ -64,30 +67,27 @@ class CodexCLI:
         while True:
             try:
                 user_input = prompt(
-                    ">>> ",
-                    history=history,
-                    auto_suggest=AutoSuggestFromHistory(),
-                    multiline=False
+                    ">>> ", history=history, auto_suggest=AutoSuggestFromHistory(), multiline=False
                 )
 
                 if not user_input.strip():
                     continue
 
                 # Handle special commands
-                if user_input.lower() in ['exit', 'quit', 'q']:
+                if user_input.lower() in ["exit", "quit", "q"]:
                     self._handle_exit()
                     break
-                elif user_input.lower() == 'help':
+                elif user_input.lower() == "help":
                     self._show_help()
                     continue
-                elif user_input.lower() == 'clear':
+                elif user_input.lower() == "clear":
                     self.context.clear()
                     print_success("Conversation history cleared")
                     continue
-                elif user_input.lower() == 'mode':
+                elif user_input.lower() == "mode":
                     self.approval_manager.show_mode_info()
                     continue
-                elif user_input.lower().startswith('mode '):
+                elif user_input.lower().startswith("mode "):
                     mode_str = user_input[5:].strip()
                     try:
                         new_mode = parse_approval_mode(mode_str)
@@ -95,7 +95,7 @@ class CodexCLI:
                     except Exception as e:
                         print_error(f"Invalid mode: {e}")
                     continue
-                elif user_input.lower() == 'tree':
+                elif user_input.lower() == "tree":
                     tree = self.file_ops.get_file_tree()
                     console.print(tree)
                     continue
@@ -143,20 +143,20 @@ class CodexCLI:
         for i, action in enumerate(actions, 1):
             console.print(f"\n[bold yellow]Action {i}/{len(actions)}:[/bold yellow]")
 
-            action_type = action['type']
+            action_type = action["type"]
 
-            if action_type == 'create_file':
-                filepath = action['filepath']
-                content = action['content']
+            if action_type == "create_file":
+                filepath = action["filepath"]
+                content = action["content"]
                 self.file_ops.create_file(filepath, content)
 
-            elif action_type == 'edit_file':
-                filepath = action['filepath']
-                content = action['content']
+            elif action_type == "edit_file":
+                filepath = action["filepath"]
+                content = action["content"]
                 self.file_ops.edit_file(filepath, content)
 
-            elif action_type == 'shell_command':
-                command = action['command']
+            elif action_type == "shell_command":
+                command = action["command"]
                 self.shell.execute(command)
 
             else:
@@ -206,10 +206,18 @@ class CodexCLI:
 
 
 @click.group(invoke_without_command=True)
-@click.option('--provider', type=click.Choice(['openai', 'anthropic']),
-              default=None, help='LLM provider to use')
-@click.option('--mode', type=click.Choice(['suggest', 'auto', 'full']),
-              default='suggest', help='Approval mode')
+@click.option(
+    "--provider",
+    type=click.Choice(["openai", "anthropic"]),
+    default=None,
+    help="LLM provider to use",
+)
+@click.option(
+    "--mode",
+    type=click.Choice(["suggest", "auto", "full"]),
+    default="suggest",
+    help="Approval mode",
+)
 @click.pass_context
 def cli(ctx, provider, mode):
     """CodexCLI - AI-powered coding assistant"""
@@ -218,7 +226,7 @@ def cli(ctx, provider, mode):
 
     # Get provider from env if not specified
     if provider is None:
-        provider = os.getenv('DEFAULT_PROVIDER', 'openai')
+        provider = os.getenv("DEFAULT_PROVIDER", "openai")
 
     # Parse approval mode
     approval_mode = parse_approval_mode(mode)
@@ -232,11 +240,11 @@ def cli(ctx, provider, mode):
 
 
 @cli.command()
-@click.argument('prompt', nargs=-1, required=True)
+@click.argument("prompt", nargs=-1, required=True)
 @click.pass_obj
 def ask(cli_obj, prompt):
     """Ask a single question or give a single command"""
-    prompt_text = ' '.join(prompt)
+    prompt_text = " ".join(prompt)
     cli_obj.run_single(prompt_text)
 
 
@@ -282,5 +290,5 @@ def main():
         sys.exit(1)
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

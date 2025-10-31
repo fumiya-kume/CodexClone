@@ -1,6 +1,7 @@
 """
 Context and conversation history management
 """
+
 import json
 from datetime import datetime
 from pathlib import Path
@@ -12,6 +13,7 @@ from .utils import get_history_file, get_context_file
 @dataclass
 class Message:
     """Represents a single message in the conversation"""
+
     role: str  # 'user', 'assistant', or 'system'
     content: str
     timestamp: str
@@ -21,7 +23,7 @@ class Message:
         return asdict(self)
 
     @classmethod
-    def from_dict(cls, data: Dict) -> 'Message':
+    def from_dict(cls, data: Dict) -> "Message":
         return cls(**data)
 
 
@@ -42,13 +44,13 @@ class ConversationContext:
             role=role,
             content=content,
             timestamp=datetime.now().isoformat(),
-            metadata=metadata or {}
+            metadata=metadata or {},
         )
         self.messages.append(message)
 
         # Keep only the last max_history messages
         if len(self.messages) > self.max_history:
-            self.messages = self.messages[-self.max_history:]
+            self.messages = self.messages[-self.max_history :]
 
         self._save_context()
 
@@ -83,7 +85,7 @@ class ConversationContext:
             data = {
                 "session_id": self.session_id,
                 "messages": [msg.to_dict() for msg in self.messages],
-                "last_updated": datetime.now().isoformat()
+                "last_updated": datetime.now().isoformat(),
             }
             self.context_file.write_text(json.dumps(data, indent=2))
         except Exception as e:
@@ -106,11 +108,13 @@ class ConversationContext:
             if self.history_file.exists():
                 history = json.loads(self.history_file.read_text())
 
-            history.append({
-                "session_id": self.session_id,
-                "messages": [msg.to_dict() for msg in self.messages],
-                "timestamp": datetime.now().isoformat()
-            })
+            history.append(
+                {
+                    "session_id": self.session_id,
+                    "messages": [msg.to_dict() for msg in self.messages],
+                    "timestamp": datetime.now().isoformat(),
+                }
+            )
 
             # Keep only last 100 sessions
             history = history[-100:]
@@ -143,7 +147,7 @@ class ProjectContext:
         if filepath.exists():
             if content is None:
                 try:
-                    content = filepath.read_text(encoding='utf-8')
+                    content = filepath.read_text(encoding="utf-8")
                 except Exception:
                     content = "[Binary or unreadable file]"
 

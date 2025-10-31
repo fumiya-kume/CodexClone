@@ -1,6 +1,7 @@
 """
 AI Agent - LLM integration with OpenAI and Anthropic
 """
+
 import os
 import json
 from typing import List, Dict, Optional, Tuple
@@ -33,18 +34,18 @@ class OpenAIProvider(LLMProvider):
         super().__init__(api_key, model)
         try:
             import openai
+
             self.client = openai.OpenAI(api_key=api_key)
         except ImportError:
-            raise ImportError("openai package not installed. Run: pip install openai")
+            raise ImportError("openai package not installed. Run: uv sync")
 
-    def generate(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 2000) -> Tuple[bool, str]:
+    def generate(
+        self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 2000
+    ) -> Tuple[bool, str]:
         """Generate response using OpenAI API"""
         try:
             response = self.client.chat.completions.create(
-                model=self.model,
-                messages=messages,
-                temperature=temperature,
-                max_tokens=max_tokens
+                model=self.model, messages=messages, temperature=temperature, max_tokens=max_tokens
             )
 
             content = response.choices[0].message.content
@@ -63,11 +64,14 @@ class AnthropicProvider(LLMProvider):
         super().__init__(api_key, model)
         try:
             import anthropic
+
             self.client = anthropic.Anthropic(api_key=api_key)
         except ImportError:
-            raise ImportError("anthropic package not installed. Run: pip install anthropic")
+            raise ImportError("anthropic package not installed. Run: uv sync")
 
-    def generate(self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 2000) -> Tuple[bool, str]:
+    def generate(
+        self, messages: List[Dict], temperature: float = 0.7, max_tokens: int = 2000
+    ) -> Tuple[bool, str]:
         """Generate response using Anthropic API"""
         try:
             # Anthropic requires system messages to be separate
@@ -84,7 +88,7 @@ class AnthropicProvider(LLMProvider):
                 "model": self.model,
                 "messages": filtered_messages,
                 "temperature": temperature,
-                "max_tokens": max_tokens
+                "max_tokens": max_tokens,
             }
 
             if system_message:
@@ -173,35 +177,25 @@ Always explain your reasoning and be concise but thorough."""
 
         # Parse CREATE_FILE actions
         import re
-        create_pattern = r'<CREATE_FILE>\s*\n(.+?)\n---\n(.*?)</CREATE_FILE>'
+
+        create_pattern = r"<CREATE_FILE>\s*\n(.+?)\n---\n(.*?)</CREATE_FILE>"
         for match in re.finditer(create_pattern, response, re.DOTALL):
             filepath = match.group(1).strip()
             content = match.group(2).strip()
-            actions.append({
-                'type': 'create_file',
-                'filepath': filepath,
-                'content': content
-            })
+            actions.append({"type": "create_file", "filepath": filepath, "content": content})
 
         # Parse EDIT_FILE actions
-        edit_pattern = r'<EDIT_FILE>\s*\n(.+?)\n---\n(.*?)</EDIT_FILE>'
+        edit_pattern = r"<EDIT_FILE>\s*\n(.+?)\n---\n(.*?)</EDIT_FILE>"
         for match in re.finditer(edit_pattern, response, re.DOTALL):
             filepath = match.group(1).strip()
             content = match.group(2).strip()
-            actions.append({
-                'type': 'edit_file',
-                'filepath': filepath,
-                'content': content
-            })
+            actions.append({"type": "edit_file", "filepath": filepath, "content": content})
 
         # Parse SHELL_COMMAND actions
-        shell_pattern = r'<SHELL_COMMAND>\s*\n(.*?)\n</SHELL_COMMAND>'
+        shell_pattern = r"<SHELL_COMMAND>\s*\n(.*?)\n</SHELL_COMMAND>"
         for match in re.finditer(shell_pattern, response, re.DOTALL):
             command = match.group(1).strip()
-            actions.append({
-                'type': 'shell_command',
-                'command': command
-            })
+            actions.append({"type": "shell_command", "command": command})
 
         return actions
 
@@ -214,10 +208,7 @@ Always explain your reasoning and be concise but thorough."""
         if additional_context:
             system_content += f"\n\nAdditional Context:\n{additional_context}"
 
-        messages.append({
-            "role": "system",
-            "content": system_content
-        })
+        messages.append({"role": "system", "content": system_content})
 
         # Add conversation history
         messages.extend(self.context.get_messages_for_api())
@@ -229,7 +220,7 @@ def create_agent(
     provider: str = "openai",
     api_key: Optional[str] = None,
     model: Optional[str] = None,
-    context: Optional[ConversationContext] = None
+    context: Optional[ConversationContext] = None,
 ) -> CodexAgent:
     """
     Create an AI agent with the specified provider

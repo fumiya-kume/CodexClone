@@ -1,6 +1,7 @@
 """
 Tests for utils module
 """
+
 import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -122,7 +123,7 @@ def test_read_file_safe_too_large(temp_dir):
 def test_read_file_safe_binary_file(temp_dir):
     """Test reading a binary file"""
     test_file = temp_dir / "test.bin"
-    test_file.write_bytes(b'\x89PNG\r\n\x1a\n')
+    test_file.write_bytes(b"\x89PNG\r\n\x1a\n")
 
     content = read_file_safe(test_file)
     assert content is None

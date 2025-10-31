@@ -1,6 +1,7 @@
 """
 Tests for CLI module
 """
+
 import pytest
 from pathlib import Path
 from unittest.mock import patch, MagicMock
@@ -8,7 +9,7 @@ from codexcli.cli import CodexCLI
 from codexcli.approval import ApprovalMode
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_initialization(mock_create_agent, temp_dir):
     """Test CodexCLI initialization"""
     mock_create_agent.return_value = MagicMock()
@@ -24,7 +25,7 @@ def test_codex_cli_initialization(mock_create_agent, temp_dir):
     mock_create_agent.assert_called_once()
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_initialization_default_root(mock_create_agent):
     """Test CodexCLI initialization with default project root"""
     mock_create_agent.return_value = MagicMock()
@@ -34,7 +35,7 @@ def test_codex_cli_initialization_default_root(mock_create_agent):
     assert cli.project_root == Path.cwd()
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_with_approval_mode(mock_create_agent, temp_dir):
     """Test CodexCLI initialization with specific approval mode"""
     mock_create_agent.return_value = MagicMock()
@@ -44,7 +45,7 @@ def test_codex_cli_with_approval_mode(mock_create_agent, temp_dir):
     assert cli.approval_manager.get_mode() == ApprovalMode.FULL_AUTO
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_with_anthropic(mock_create_agent, temp_dir):
     """Test CodexCLI initialization with Anthropic provider"""
     mock_create_agent.return_value = MagicMock()
@@ -53,10 +54,10 @@ def test_codex_cli_with_anthropic(mock_create_agent, temp_dir):
 
     # Verify create_agent was called with correct provider
     call_args = mock_create_agent.call_args
-    assert call_args[1]['provider'] == 'anthropic'
+    assert call_args[1]["provider"] == "anthropic"
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_initialization_failure(mock_create_agent, temp_dir):
     """Test CodexCLI initialization failure"""
     mock_create_agent.side_effect = Exception("API key not found")
@@ -65,7 +66,7 @@ def test_codex_cli_initialization_failure(mock_create_agent, temp_dir):
         CodexCLI(project_root=temp_dir)
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_process_message(mock_create_agent, temp_dir):
     """Test processing a message"""
     mock_agent = MagicMock()
@@ -79,7 +80,7 @@ def test_codex_cli_process_message(mock_create_agent, temp_dir):
     assert cli.agent is not None
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_file_operations_integration(mock_create_agent, temp_dir):
     """Test that file operations are properly integrated"""
     mock_create_agent.return_value = MagicMock()
@@ -91,7 +92,7 @@ def test_codex_cli_file_operations_integration(mock_create_agent, temp_dir):
     assert cli.file_ops.approval_manager == cli.approval_manager
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_shell_integration(mock_create_agent, temp_dir):
     """Test that shell executor is properly integrated"""
     mock_create_agent.return_value = MagicMock()
@@ -103,7 +104,7 @@ def test_codex_cli_shell_integration(mock_create_agent, temp_dir):
     assert cli.shell.approval_manager == cli.approval_manager
 
 
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_contexts_integration(mock_create_agent, temp_dir):
     """Test that contexts are properly integrated"""
     mock_create_agent.return_value = MagicMock()
@@ -116,7 +117,7 @@ def test_codex_cli_contexts_integration(mock_create_agent, temp_dir):
 
 
 @pytest.mark.unit
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_approval_mode_change(mock_create_agent, temp_dir):
     """Test changing approval mode"""
     mock_create_agent.return_value = MagicMock()
@@ -129,7 +130,7 @@ def test_codex_cli_approval_mode_change(mock_create_agent, temp_dir):
 
 
 @pytest.mark.unit
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_components_exist(mock_create_agent, temp_dir):
     """Test that all components are initialized"""
     mock_create_agent.return_value = MagicMock()
@@ -137,17 +138,17 @@ def test_codex_cli_components_exist(mock_create_agent, temp_dir):
     cli = CodexCLI(project_root=temp_dir)
 
     # Verify all components exist
-    assert hasattr(cli, 'agent')
-    assert hasattr(cli, 'context')
-    assert hasattr(cli, 'project_context')
-    assert hasattr(cli, 'approval_manager')
-    assert hasattr(cli, 'file_ops')
-    assert hasattr(cli, 'shell')
-    assert hasattr(cli, 'project_root')
+    assert hasattr(cli, "agent")
+    assert hasattr(cli, "context")
+    assert hasattr(cli, "project_context")
+    assert hasattr(cli, "approval_manager")
+    assert hasattr(cli, "file_ops")
+    assert hasattr(cli, "shell")
+    assert hasattr(cli, "project_root")
 
 
 @pytest.mark.unit
-@patch('codexcli.cli.create_agent')
+@patch("codexcli.cli.create_agent")
 def test_codex_cli_with_different_providers(mock_create_agent, temp_dir):
     """Test initialization with different providers"""
     mock_create_agent.return_value = MagicMock()

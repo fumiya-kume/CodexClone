@@ -84,15 +84,15 @@ Current test status:
 
 ```bash
 # Install dev dependencies
-pip install -e ".[dev]"
+uv sync --extra dev
 
 # Run tests with coverage
-pytest --cov=codexcli --cov-report=term-missing -v
+uv run pytest --cov=codexcli --cov-report=term-missing -v
 
 # Run code quality checks
-black --check src/ tests/
-flake8 src/ tests/
-mypy src/codexcli
+uv run black --check src/ tests/
+uv run flake8 src/ tests/
+uv run mypy src/codexcli
 ```
 
 ## Additional Resources

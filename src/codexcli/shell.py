@@ -1,6 +1,7 @@
 """
 Shell command execution
 """
+
 import subprocess
 import shlex
 from typing import Optional, Tuple
@@ -17,10 +18,7 @@ class ShellExecutor:
         self.working_dir = working_dir or Path.cwd()
 
     def execute(
-        self,
-        command: str,
-        description: Optional[str] = None,
-        timeout: int = 30
+        self, command: str, description: Optional[str] = None, timeout: int = 30
     ) -> Tuple[bool, str, str]:
         """
         Execute a shell command
@@ -44,7 +42,7 @@ class ShellExecutor:
                 cwd=self.working_dir,
                 capture_output=True,
                 text=True,
-                timeout=timeout
+                timeout=timeout,
             )
 
             stdout = result.stdout.strip()
@@ -96,10 +94,7 @@ class ShellExecutor:
         """Check if a command is available in PATH"""
         try:
             result = subprocess.run(
-                f"command -v {shlex.quote(command)}",
-                shell=True,
-                capture_output=True,
-                text=True
+                f"command -v {shlex.quote(command)}", shell=True, capture_output=True, text=True
             )
             return result.returncode == 0
         except Exception:

@@ -15,7 +15,7 @@ cd CodexClone
 3. 開発用依存関係をインストール
 
 ```bash
-pip install -e ".[dev]"
+uv sync --extra dev
 ```
 
 4. 環境変数を設定
@@ -35,19 +35,19 @@ cp .env.example .env
 ### コードフォーマット
 
 ```bash
-black src/
+uv run black src/
 ```
 
 ### 型チェック
 
 ```bash
-mypy src/
+uv run mypy src/
 ```
 
 ### Linting
 
 ```bash
-flake8 src/
+uv run flake8 src/
 ```
 
 ## テスト
@@ -58,13 +58,13 @@ flake8 src/
 
 ```bash
 # すべてのテストを実行
-pytest
+uv run pytest
 
 # カバレッジレポート付き
-pytest --cov=codexcli --cov-report=html
+uv run pytest --cov=codexcli --cov-report=html
 
 # 特定のテストファイルのみ
-pytest tests/test_approval.py
+uv run pytest tests/test_approval.py
 ```
 
 ## プルリクエスト

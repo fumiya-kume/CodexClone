@@ -1,6 +1,7 @@
 """
 Tests for context module
 """
+
 import pytest
 from pathlib import Path
 from codexcli.context import Message, ConversationContext, ProjectContext
@@ -16,7 +17,9 @@ def test_message_creation():
 def test_message_with_metadata():
     """Test creating a message with metadata"""
     metadata = {"action": "file_create", "filename": "test.py"}
-    msg = Message(role="assistant", content="Done", timestamp="2024-01-01T00:00:00", metadata=metadata)
+    msg = Message(
+        role="assistant", content="Done", timestamp="2024-01-01T00:00:00", metadata=metadata
+    )
     assert msg.metadata == metadata
     assert msg.metadata["action"] == "file_create"
 
@@ -35,7 +38,7 @@ def test_message_from_dict():
         "role": "assistant",
         "content": "Hi there",
         "timestamp": "2024-01-01T00:00:00",
-        "metadata": {}
+        "metadata": {},
     }
     msg = Message.from_dict(data)
     assert msg.role == "assistant"
@@ -206,7 +209,7 @@ def test_project_context_multiple_files(test_project_dir):
     files = [
         test_project_dir / "test.py",
         test_project_dir / "src" / "main.py",
-        test_project_dir / "README.md"
+        test_project_dir / "README.md",
     ]
 
     for file in files:
@@ -223,7 +226,7 @@ def test_project_context_binary_file(test_project_dir):
     """Test adding binary file to context"""
     context = ProjectContext(test_project_dir)
     binary_file = test_project_dir / "test.bin"
-    binary_file.write_bytes(b'\x89PNG\r\n\x1a\n')
+    binary_file.write_bytes(b"\x89PNG\r\n\x1a\n")
 
     context.add_file(binary_file)
 

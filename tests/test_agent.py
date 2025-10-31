@@ -1,15 +1,10 @@
 """
 Tests for agent module
 """
+
 import pytest
 from unittest.mock import patch, MagicMock
-from codexcli.agent import (
-    LLMProvider,
-    OpenAIProvider,
-    AnthropicProvider,
-    CodexAgent,
-    create_agent
-)
+from codexcli.agent import LLMProvider, OpenAIProvider, AnthropicProvider, CodexAgent, create_agent
 from codexcli.context import ConversationContext
 
 
@@ -25,7 +20,7 @@ def test_llm_provider_base_class():
 
 def test_openai_provider_initialization(mock_openai_client):
     """Test OpenAI provider initialization"""
-    with patch('openai.OpenAI', return_value=mock_openai_client):
+    with patch("openai.OpenAI", return_value=mock_openai_client):
         provider = OpenAIProvider(api_key="test_key", model="gpt-4")
         assert provider.api_key == "test_key"
         assert provider.model == "gpt-4"
@@ -45,16 +40,12 @@ def test_openai_provider_generate_success(mock_openai_provider, mock_openai_clie
 def test_openai_provider_generate_with_parameters(mock_openai_provider, mock_openai_client):
     """Test OpenAI generation with custom parameters"""
     messages = [{"role": "user", "content": "Hello"}]
-    success, response = mock_openai_provider.generate(
-        messages,
-        temperature=0.5,
-        max_tokens=1000
-    )
+    success, response = mock_openai_provider.generate(messages, temperature=0.5, max_tokens=1000)
 
     assert success is True
     call_kwargs = mock_openai_client.chat.completions.create.call_args[1]
-    assert call_kwargs['temperature'] == 0.5
-    assert call_kwargs['max_tokens'] == 1000
+    assert call_kwargs["temperature"] == 0.5
+    assert call_kwargs["max_tokens"] == 1000
 
 
 def test_openai_provider_generate_error(mock_openai_provider, mock_openai_client):
@@ -70,7 +61,7 @@ def test_openai_provider_generate_error(mock_openai_provider, mock_openai_client
 
 def test_anthropic_provider_initialization(mock_anthropic_client):
     """Test Anthropic provider initialization"""
-    with patch('anthropic.Anthropic', return_value=mock_anthropic_client):
+    with patch("anthropic.Anthropic", return_value=mock_anthropic_client):
         provider = AnthropicProvider(api_key="test_key", model="claude-3-5-sonnet-20241022")
         assert provider.api_key == "test_key"
         assert provider.model == "claude-3-5-sonnet-20241022"
@@ -91,16 +82,16 @@ def test_anthropic_provider_system_message_handling(mock_anthropic_provider, moc
     """Test that Anthropic provider handles system messages correctly"""
     messages = [
         {"role": "system", "content": "You are helpful"},
-        {"role": "user", "content": "Hello"}
+        {"role": "user", "content": "Hello"},
     ]
     success, response = mock_anthropic_provider.generate(messages)
 
     assert success is True
     call_kwargs = mock_anthropic_client.messages.create.call_args[1]
-    assert call_kwargs['system'] == "You are helpful"
+    assert call_kwargs["system"] == "You are helpful"
     # System message should be filtered from messages list
-    assert len(call_kwargs['messages']) == 1
-    assert call_kwargs['messages'][0]['role'] == 'user'
+    assert len(call_kwargs["messages"]) == 1
+    assert call_kwargs["messages"][0]["role"] == "user"
 
 
 def test_anthropic_provider_generate_error(mock_anthropic_provider, mock_anthropic_client):
@@ -170,9 +161,9 @@ print('Hello World')
     actions = agent.parse_actions(response)
 
     assert len(actions) == 1
-    assert actions[0]['type'] == 'create_file'
-    assert actions[0]['filepath'] == 'test.py'
-    assert "print('Hello World')" in actions[0]['content']
+    assert actions[0]["type"] == "create_file"
+    assert actions[0]["filepath"] == "test.py"
+    assert "print('Hello World')" in actions[0]["content"]
 
 
 def test_codex_agent_parse_actions_edit_file(conversation_context, mock_openai_provider):
@@ -191,9 +182,9 @@ def main():
     actions = agent.parse_actions(response)
 
     assert len(actions) == 1
-    assert actions[0]['type'] == 'edit_file'
-    assert actions[0]['filepath'] == 'main.py'
-    assert 'Updated' in actions[0]['content']
+    assert actions[0]["type"] == "edit_file"
+    assert actions[0]["filepath"] == "main.py"
+    assert "Updated" in actions[0]["content"]
 
 
 def test_codex_agent_parse_actions_shell_command(conversation_context, mock_openai_provider):
@@ -209,8 +200,8 @@ python test.py
     actions = agent.parse_actions(response)
 
     assert len(actions) == 1
-    assert actions[0]['type'] == 'shell_command'
-    assert actions[0]['command'] == 'python test.py'
+    assert actions[0]["type"] == "shell_command"
+    assert actions[0]["command"] == "python test.py"
 
 
 def test_codex_agent_parse_actions_multiple(conversation_context, mock_openai_provider):
@@ -240,9 +231,9 @@ python test.py
     actions = agent.parse_actions(response)
 
     assert len(actions) == 3
-    assert actions[0]['type'] == 'create_file'
-    assert actions[1]['type'] == 'edit_file'
-    assert actions[2]['type'] == 'shell_command'
+    assert actions[0]["type"] == "create_file"
+    assert actions[1]["type"] == "edit_file"
+    assert actions[2]["type"] == "shell_command"
 
 
 def test_codex_agent_parse_actions_none(conversation_context, mock_openai_provider):
@@ -258,7 +249,7 @@ def test_codex_agent_parse_actions_none(conversation_context, mock_openai_provid
 
 def test_create_agent_openai(env_vars):
     """Test creating OpenAI agent"""
-    with patch('openai.OpenAI'):
+    with patch("openai.OpenAI"):
         agent = create_agent(provider="openai")
         assert agent is not None
         assert isinstance(agent.provider, OpenAIProvider)
@@ -266,7 +257,7 @@ def test_create_agent_openai(env_vars):
 
 def test_create_agent_anthropic(env_vars):
     """Test creating Anthropic agent"""
-    with patch('anthropic.Anthropic'):
+    with patch("anthropic.Anthropic"):
         agent = create_agent(provider="anthropic")
         assert agent is not None
         assert isinstance(agent.provider, AnthropicProvider)
@@ -274,21 +265,21 @@ def test_create_agent_anthropic(env_vars):
 
 def test_create_agent_with_api_key():
     """Test creating agent with explicit API key"""
-    with patch('openai.OpenAI'):
+    with patch("openai.OpenAI"):
         agent = create_agent(provider="openai", api_key="custom_key")
         assert agent.provider.api_key == "custom_key"
 
 
 def test_create_agent_with_model():
     """Test creating agent with custom model"""
-    with patch('openai.OpenAI'):
+    with patch("openai.OpenAI"):
         agent = create_agent(provider="openai", api_key="test", model="gpt-3.5-turbo")
         assert agent.provider.model == "gpt-3.5-turbo"
 
 
 def test_create_agent_with_context(conversation_context):
     """Test creating agent with existing context"""
-    with patch('openai.OpenAI'):
+    with patch("openai.OpenAI"):
         agent = create_agent(provider="openai", api_key="test", context=conversation_context)
         assert agent.context == conversation_context
 
