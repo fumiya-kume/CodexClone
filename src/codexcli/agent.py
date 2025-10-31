@@ -216,6 +216,30 @@ Always explain your reasoning and be concise but thorough."""
         return messages
 
 
+def _load_api_key_from_auth_file(key_name: str) -> Optional[str]:
+    """Load API key from ~/.codex/auth.json if available."""
+    auth_path = Path.home() / ".codex" / "auth.json"
+
+    if not auth_path.exists():
+        return None
+
+    try:
+        with auth_path.open("r", encoding="utf-8") as auth_file:
+            data = json.load(auth_file)
+    except (OSError, json.JSONDecodeError) as exc:
+        # Warn when the auth file is unreadable so users can fix it quickly.
+        print_warning(f"Failed to read {auth_path}: {exc}")
+        return None
+
+    # Handle common key spellings to make migration painless.
+    return (
+        data.get(key_name)
+        or data.get(key_name.lower())
+        or data.get("api_key")
+        or data.get("openai_api_key")
+    )
+
+
 def create_agent(
     provider: str = "openai",
     api_key: Optional[str] = None,
@@ -237,6 +261,9 @@ def create_agent(
     # Get API key from environment if not provided
     if provider == "openai":
         api_key = api_key or os.getenv("OPENAI_API_KEY")
+        if not api_key:
+            # Fall back to auth file so existing CLI setups keep working.
+            api_key = _load_api_key_from_auth_file("OPENAI_API_KEY")
         model = model or os.getenv("OPENAI_MODEL", "gpt-4")
         if not api_key:
             raise ValueError("OPENAI_API_KEY not set")
